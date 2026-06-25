@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GO7 — Questionnaire v2 (Level 1 S package)</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500&family=Sora:wght@400;600&display=swap');
+    :root {
+      --font-sans: system-ui, -apple-system, sans-serif;
+      --color-text-primary: #282828;
+      --color-text-secondary: #505050;
+      --color-text-tertiary: #787878;
+      --color-text-danger: #c81e1e;
+      --color-background-primary: #ffffff;
+      --color-background-secondary: #f6f7fb;
+      --color-border-tertiary: rgba(0, 0, 0, 0.12);
+      --color-border-danger: #e02424;
+    }
+    body { margin: 0; padding: 2rem 1.25rem 3rem; background: var(--color-background-secondary); color: var(--color-text-primary); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    h2.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+    .wrap { font-family: 'Lexend', var(--font-sans); max-width: 660px; margin: 0 auto; }
+    .top-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 1rem; flex-wrap: wrap; }
+    .go7-badge { background: #dbfb37; color: #3a4a00; font-family: 'Sora', sans-serif; font-weight: 600; font-size: 13px; padding: 4px 10px; border-radius: 4px; letter-spacing: .5px; }
+    .pkg-badge { background: #282828; color: #dbfb37; font-family: 'Sora', sans-serif; font-weight: 600; font-size: 12px; padding: 4px 10px; border-radius: 4px; }
+    .version-link { font-size: 12px; color: var(--color-text-secondary); text-decoration: none; }
+    .version-link:hover { color: var(--color-text-primary); text-decoration: underline; }
+    .form-title { font-family: 'Sora', sans-serif; font-size: 20px; font-weight: 600; margin-bottom: 4px; margin-top: 8px; }
+    .form-sub { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1.5rem; }
+    .sec-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+    .sec-num { font-size: 10px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 6px; }
+    .sec-head { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 600; margin-bottom: 1rem; }
+    .field { margin-bottom: 1rem; }
+    .field:last-child { margin-bottom: 0; }
+    .field label { display: block; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 5px; }
+    .field-hint { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 6px; line-height: 1.45; }
+    .field-hint a { color: #1f7a97; }
+    .field input[type=text], .field input[type=email], .field input[type=url], .field textarea, .field select {
+      width: 100%; font-size: 13px; font-family: 'Lexend', sans-serif; padding: 8px 10px;
+      border: 0.5px solid var(--color-border-tertiary); border-radius: 6px;
+      background: var(--color-background-primary); color: var(--color-text-primary);
+    }
+    .field textarea { min-height: 64px; resize: vertical; }
+    .field input.err { outline: 2px solid var(--color-border-danger); }
+    .err-msg { font-size: 11px; color: var(--color-text-danger); margin-top: 4px; display: none; }
+    .err-msg.show { display: block; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 520px) { .two-col { grid-template-columns: 1fr; } }
+    .cb-list { display: flex; flex-direction: column; gap: 6px; }
+    .cb-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--color-text-secondary); }
+    .cb-row input[type=checkbox] { width: 14px; height: 14px; accent-color: #dbfb37; flex-shrink: 0; }
+    .numbered-list { display: flex; flex-direction: column; gap: 8px; }
+    .numbered-row { display: flex; align-items: center; gap: 10px; }
+    .numbered-row span { font-size: 12px; color: var(--color-text-tertiary); width: 22px; flex-shrink: 0; }
+    .numbered-row input { flex: 1; font-size: 13px; font-family: 'Lexend', sans-serif; padding: 8px 10px; border: 0.5px solid var(--color-border-tertiary); border-radius: 6px; }
+    .tpl-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    @media (max-width: 520px) { .tpl-grid { grid-template-columns: repeat(2, 1fr); } }
+    .tpl-card { border: 1.5px solid var(--color-border-tertiary); border-radius: 8px; overflow: hidden; cursor: pointer; background: var(--color-background-secondary); }
+    .tpl-card.on { border-color: #dbfb37; outline: 2px solid #dbfb3744; }
+    .tpl-thumb { height: 80px; position: relative; overflow: hidden; }
+    .tpl-name { font-size: 10px; font-weight: 500; color: var(--color-text-secondary); padding: 5px 6px; text-align: center; font-family: 'Lexend', sans-serif; }
+    .tpl-card.on .tpl-name { color: #3a4a00; background: #dbfb3722; }
+    .submit-row { margin-top: 1.5rem; display: flex; justify-content: flex-end; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .form-err { font-size: 12px; color: var(--color-text-danger); display: none; }
+    .form-err.show { display: block; }
+    .btn-submit { background: #dbfb37; color: #3a4a00; border: none; border-radius: 8px; padding: 10px 28px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'Lexend', sans-serif; }
+    .btn-submit:hover { background: #c8e030; }
+    .success-bar { background: #dbfb37; color: #3a4a00; padding: 10px 16px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; border-radius: 12px; margin-bottom: 1rem; font-family: 'Lexend', sans-serif; }
+    .btn-prev { background: var(--color-background-primary); border: 1.5px solid #dbfb37; color: #3a4a00; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-family: 'Lexend', sans-serif; }
+    .btn-prev:hover { background: #dbfb3722; }
+    .prev-wrap { margin-top: 1rem; border: 0.5px solid var(--color-border-tertiary); border-radius: 12px; overflow: hidden; }
+    .sim-hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<h2 class="sr-only">GO7 questionnaire v2 with live website preview</h2>
+<div class="wrap">
+
+  <div class="top-row">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="go7-badge">GO7</span>
+      <span class="pkg-badge">Level 1 (S package)</span>
+    </div>
+    <a class="version-link" href="index.html">← Original questionnaire</a>
+  </div>
+
+  <div class="form-title">Questionnaire v2</div>
+  <div class="form-sub">Fill in all sections and submit to unlock your live preview.</div>
+
+  <!-- 1. Project overview -->
+  <div class="sec-card">
+    <div class="sec-num">1</div>
+    <div class="sec-head">Project overview</div>
+    <div class="field">
+      <label>Airline / brand name *</label>
+      <input type="text" id="f-airline" placeholder="e.g. Skywing Air">
+      <div class="err-msg" id="err-airline">Please enter the airline name.</div>
+    </div>
+    <div class="field">
+      <label>Existing website URL (if available)</label>
+      <input type="url" id="f-url" placeholder="https://">
+    </div>
+    <div class="field">
+      <label>Primary contact name *</label>
+      <input type="text" id="f-contact" placeholder="Full name">
+      <div class="err-msg" id="err-contact">Please enter a contact name.</div>
+    </div>
+    <div class="field">
+      <label>Email address *</label>
+      <input type="email" id="f-email" placeholder="name@airline.com">
+      <div class="err-msg" id="err-email">Please enter a valid email.</div>
+    </div>
+    <div class="field">
+      <label>Target launch date</label>
+      <input type="text" id="f-launch" placeholder="e.g. Q3 2026">
+    </div>
+  </div>
+
+  <!-- 2. Selected template -->
+  <div class="sec-card">
+    <div class="sec-num">2</div>
+    <div class="sec-head">Selected template</div>
+    <div class="field">
+      <label>Choose your template *</label>
+      <div class="tpl-grid" id="tpl-grid">
+        <div class="tpl-card on" onclick="selectTpl(this,'classic')"><div class="tpl-thumb" id="tthumb-classic"></div><div class="tpl-name">Classic</div></div>
+        <div class="tpl-card" onclick="selectTpl(this,'bold')"><div class="tpl-thumb" id="tthumb-bold"></div><div class="tpl-name">Bold hero</div></div>
+        <div class="tpl-card" onclick="selectTpl(this,'minimal')"><div class="tpl-thumb" id="tthumb-minimal"></div><div class="tpl-name">Minimal</div></div>
+        <div class="tpl-card" onclick="selectTpl(this,'premium')"><div class="tpl-thumb" id="tthumb-premium"></div><div class="tpl-name">Premium</div></div>
+        <div class="tpl-card" onclick="selectTpl(this,'vibrant')"><div class="tpl-thumb" id="tthumb-vibrant"></div><div class="tpl-name">Vibrant</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Brand assets -->
+  <div class="sec-card">
+    <div class="sec-num">3</div>
+    <div class="sec-head">Brand assets and visual direction</div>
+    <p class="field-hint">Please share available assets (as part of your response to this questionnaire as attachments or links to files)</p>
+    <div class="field">
+      <div class="cb-list">
+        <label class="cb-row"><input type="checkbox" checked>Primary logo</label>
+        <label class="cb-row"><input type="checkbox">Secondary logo</label>
+        <label class="cb-row"><input type="checkbox">Favicon</label>
+        <label class="cb-row"><input type="checkbox">Images</label>
+      </div>
+    </div>
+    <div class="field">
+      <label>Primary brand colors</label>
+      <p class="field-hint">Please specify the HEX and RGB values (e.g., #000000 (HEX) / 0, 0, 0 (RGB)).</p>
+      <input type="text" id="f-primary" value="#dbfb37 (HEX) / 219, 251, 55 (RGB)" placeholder="#000000 (HEX) / 0, 0, 0 (RGB)">
+    </div>
+    <div class="field">
+      <label>Secondary / accent colors</label>
+      <p class="field-hint">Please specify the HEX and RGB values (e.g., #000000 (HEX) / 0, 0, 0 (RGB)).</p>
+      <input type="text" id="f-secondary" value="#1f7a97 (HEX) / 31, 122, 151 (RGB)" placeholder="#000000 (HEX) / 0, 0, 0 (RGB)">
+    </div>
+    <div class="field">
+      <label>Preferred brand fonts</label>
+      <input type="text" id="f-fonts" placeholder="e.g. Lexend, Sora">
+      <p class="field-hint">You may select a font from the available Google fonts: <a href="https://fonts.google.com/" target="_blank" rel="noreferrer">fonts.google.com</a></p>
+    </div>
+  </div>
+
+  <!-- 4. Website structure -->
+  <div class="sec-card">
+    <div class="sec-num">4</div>
+    <div class="sec-head">Website structure</div>
+    <div class="field">
+      <label>Which links should appear in the main Menu?</label>
+      <div class="cb-list" id="nav-cbs">
+        <label class="cb-row"><input type="checkbox" checked>Book a Flight</label>
+        <label class="cb-row"><input type="checkbox" checked>Manage Booking</label>
+        <label class="cb-row"><input type="checkbox" checked>Check-in</label>
+        <label class="cb-row"><input type="checkbox">Destinations</label>
+        <label class="cb-row"><input type="checkbox">Travel Information</label>
+        <label class="cb-row"><input type="checkbox">About Us</label>
+        <label class="cb-row"><input type="checkbox">Contact Us</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Website content -->
+  <div class="sec-card">
+    <div class="sec-num">5</div>
+    <div class="sec-head">Website Content</div>
+    <p class="field-hint">You may include up to 10 content pages our product team will work on</p>
+    <div class="field numbered-list">
+      <div class="numbered-row"><span>1.</span><input type="text" id="content-1" placeholder="Page title"></div>
+      <div class="numbered-row"><span>2.</span><input type="text" id="content-2" placeholder="Page title"></div>
+      <div class="numbered-row"><span>3.</span><input type="text" id="content-3" placeholder="Page title"></div>
+      <div class="numbered-row"><span>4.</span><input type="text" id="content-4" placeholder="Page title"></div>
+      <div class="numbered-row"><span>5.</span><input type="text" id="content-5" placeholder="Page title"></div>
+      <div class="numbered-row"><span>6.</span><input type="text" id="content-6" placeholder="Page title"></div>
+      <div class="numbered-row"><span>7.</span><input type="text" id="content-7" placeholder="Page title"></div>
+      <div class="numbered-row"><span>8.</span><input type="text" id="content-8" placeholder="Page title"></div>
+      <div class="numbered-row"><span>9.</span><input type="text" id="content-9" placeholder="Page title"></div>
+      <div class="numbered-row"><span>10.</span><input type="text" id="content-10" placeholder="Page title"></div>
+    </div>
+    <div class="field">
+      <label>Home Page content (texts &amp; Images)</label>
+      <textarea id="f-home-content" placeholder="Describe homepage copy, imagery, and key messages…"></textarea>
+    </div>
+    <div class="field">
+      <label>Footer configuration</label>
+      <p class="field-hint">Which items should appear in the footer?</p>
+      <textarea id="f-footer-config" placeholder="e.g. About us, Contact, Social links, Legal…"></textarea>
+    </div>
+    <div class="field">
+      <label>Additional notes</label>
+      <textarea id="f-notes" placeholder="Special requests, out-of-scope items…"></textarea>
+    </div>
+  </div>
+
+  <!-- Hidden fields used by preview simulator (same logic as v1) -->
+  <div class="sim-hidden" aria-hidden="true">
+    <input type="text" id="f-cta" value="Book a Flight">
+    <div id="rg-mood"><div class="pill on">Light</div></div>
+    <div id="rg-tone"><div class="pill on">Inspiring</div></div>
+    <input type="checkbox" id="s-deals" checked>
+    <input type="checkbox" id="s-skymiles" checked>
+    <input type="checkbox" id="s-journey" checked>
+    <input type="checkbox" id="s-newsletter" checked>
+    <input type="checkbox" id="s-footer" checked>
+  </div>
+
+  <div class="submit-row">
+    <span class="form-err" id="form-err">Please fill in all required fields marked with *</span>
+    <button type="button" class="btn-submit" onclick="submitForm()">
+      <i class="ti ti-send" aria-hidden="true" style="font-size:15px;vertical-align:-2px;margin-right:6px"></i>Submit questionnaire
+    </button>
+  </div>
+
+  <div id="preview-section" style="display:none;margin-top:1.5rem">
+    <div class="success-bar"><i class="ti ti-circle-check" aria-hidden="true" style="font-size:18px"></i>Questionnaire submitted — your preview is ready</div>
+    <button type="button" class="btn-prev" onclick="togglePreview()"><i class="ti ti-eye" aria-hidden="true" style="font-size:16px"></i><span id="prev-lbl">Preview my website</span></button>
+    <div id="prev-wrap" class="prev-wrap" style="display:none"></div>
+  </div>
+
+</div>
+
+<script>
+var tplSelected = 'classic';
+var previewOpen = false;
+
+var heroImgs = {
+  classic: 'https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=600&q=70',
+  bold: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=70',
+  minimal: 'https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=70',
+  premium: 'https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=600&q=70',
+  vibrant: 'https://images.unsplash.com/photo-1583422409516-2895a77efded?w=600&q=70'
+};
+
+function drawThumbs() {
+  var cfgs = {
+    classic: { nb: 'rgba(255,255,255,0.97)', nd: true, oo: 0.3, ac: '#dbfb37' },
+    bold: { nb: 'rgba(0,0,0,0)', nd: false, oo: 0.15, ac: '#E02424' },
+    minimal: { nb: 'white', nd: true, oo: 0.08, ac: '#1A56DB' },
+    premium: { nb: 'rgba(0,0,0,0.82)', nd: false, oo: 0.5, ac: '#7E3AF2' },
+    vibrant: { nb: 'rgba(0,0,0,0)', nd: false, oo: 0.2, ac: '#FF6B35' }
+  };
+  Object.keys(cfgs).forEach(function(key) {
+    var el = document.getElementById('tthumb-' + key);
+    if (!el) return;
+    var c = cfgs[key];
+    var nt = c.nd ? '#282828' : 'rgba(255,255,255,0.9)';
+    el.innerHTML = '<img src="' + heroImgs[key] + '" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:' + (key === 'minimal' ? 0.18 : 0.85) + '">' +
+      '<div style="position:absolute;inset:0;background:rgba(0,0,0,' + c.oo + ')"></div>' +
+      '<div style="position:absolute;top:0;left:0;right:0;height:16px;background:' + c.nb + ';display:flex;align-items:center;padding:0 5px;gap:4px">' +
+        '<div style="width:14px;height:5px;border-radius:1px;background:' + c.ac + '"></div>' +
+        '<div style="flex:1;display:flex;gap:3px">' +
+          '<div style="width:10px;height:3px;border-radius:1px;background:' + nt + ';opacity:.7"></div>' +
+          '<div style="width:10px;height:3px;border-radius:1px;background:' + nt + ';opacity:.7"></div>' +
+          '<div style="width:10px;height:3px;border-radius:1px;background:' + nt + ';opacity:.7"></div>' +
+        '</div>' +
+        '<div style="width:16px;height:5px;border-radius:8px;background:' + c.ac + '"></div>' +
+      '</div>' +
+      '<div style="position:absolute;bottom:18px;left:50%;transform:translateX(-50%);text-align:center">' +
+        '<div style="width:50px;height:5px;border-radius:2px;background:rgba(255,255,255,' + (key === 'minimal' ? '0.9' : '0.85') + ');margin:0 auto 4px"></div>' +
+        '<div style="width:35px;height:3px;border-radius:2px;background:rgba(255,255,255,' + (key === 'minimal' ? '0.7' : '0.6') + ');margin:0 auto"></div>' +
+      '</div>' +
+      '<div style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.95);border-radius:4px;height:10px;width:70px;display:flex;align-items:center;padding:0 4px;gap:3px">' +
+        '<div style="width:18px;height:4px;border-radius:1px;background:#e0e0e0"></div>' +
+        '<div style="width:1px;height:6px;background:#ccc"></div>' +
+        '<div style="width:18px;height:4px;border-radius:1px;background:#e0e0e0"></div>' +
+        '<div style="width:14px;height:6px;border-radius:2px;background:' + c.ac + ';margin-left:auto"></div>' +
+      '</div>';
+  });
+}
+
+function selectTpl(el, key) {
+  document.querySelectorAll('.tpl-card').forEach(function(c) { c.classList.remove('on'); });
+  el.classList.add('on');
+  tplSelected = key;
+  if (previewOpen) renderPreview(document.getElementById('prev-wrap'));
+}
+
+function gv(id, fb) { var el = document.getElementById(id); return el ? (el.value.trim() || fb || '') : (fb || ''); }
+function gp(gid) { var el = document.querySelector('#' + gid + ' .pill.on'); return el ? el.textContent.trim() : ''; }
+function parseHex(s) { var m = (s || '').match(/#[0-9a-fA-F]{6}/); return m ? m[0] : null; }
+function isHex(s) { return /^#[0-9a-fA-F]{6}$/.test((s || '').trim()); }
+function lum(h) { var r = parseInt(h.slice(1, 3), 16), g = parseInt(h.slice(3, 5), 16), b = parseInt(h.slice(5, 7), 16); return .299 * r + .587 * g + .114 * b; }
+function ton(h) { return lum(h) > 140 ? '#282828' : '#ffffff'; }
+
+function submitForm() {
+  var ok = true;
+  var airline = gv('f-airline');
+  var contact = gv('f-contact');
+  var email = gv('f-email');
+
+  document.querySelectorAll('.err-msg').forEach(function(e) { e.classList.remove('show'); });
+  document.querySelectorAll('input.err').forEach(function(e) { e.classList.remove('err'); });
+  document.getElementById('form-err').classList.remove('show');
+
+  if (!airline) { document.getElementById('err-airline').classList.add('show'); document.getElementById('f-airline').classList.add('err'); ok = false; }
+  if (!contact) { document.getElementById('err-contact').classList.add('show'); document.getElementById('f-contact').classList.add('err'); ok = false; }
+  if (!email || email.indexOf('@') < 0) { document.getElementById('err-email').classList.add('show'); document.getElementById('f-email').classList.add('err'); ok = false; }
+
+  if (!ok) {
+    document.getElementById('form-err').classList.add('show');
+    var firstErr = document.querySelector('.err-msg.show');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  document.getElementById('preview-section').style.display = 'block';
+  document.getElementById('preview-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function togglePreview() {
+  previewOpen = !previewOpen;
+  var wrap = document.getElementById('prev-wrap');
+  var lbl = document.getElementById('prev-lbl');
+  if (previewOpen) {
+    wrap.style.display = 'block';
+    lbl.textContent = 'Hide preview';
+    renderPreview(wrap);
+  } else {
+    wrap.style.display = 'none';
+    lbl.textContent = 'Preview my website';
+  }
+}
+
+var tones = {
+  'Inspiring': { tag: 'Ease your mind in the Dolomites', sub: 'Discover extraordinary destinations worldwide' },
+  'Friendly': { tag: 'Great deals, wherever you\'re headed', sub: 'Fly with us and explore the world' },
+  'Premium': { tag: 'Fly beyond expectations', sub: 'A refined, elevated travel experience' },
+  'Practical': { tag: 'Direct routes. Simple booking.', sub: 'Book your flight in minutes' },
+  'Warm & human': { tag: 'We\'re glad you\'re flying with us', sub: 'Your comfort is our priority' }
+};
+
+function renderPreview(wrap) {
+  var airline = gv('f-airline', 'GO7 Airlines');
+  var cta = gv('f-cta', 'Book a Flight');
+  var primary = parseHex(gv('f-primary')) || '#dbfb37';
+  var accent = parseHex(gv('f-secondary')) || '#1f7a97';
+  if (!isHex(primary)) primary = '#dbfb37';
+  if (!isHex(accent)) accent = '#1f7a97';
+  var pText = ton(primary);
+  var mood = gp('rg-mood') || 'Light';
+  var tone = gp('rg-tone') || 'Inspiring';
+  var toneObj = tones[tone] || tones['Inspiring'];
+  var isDark = mood === 'Dark';
+  var isMinimal = tplSelected === 'minimal';
+  var isPremium = tplSelected === 'premium';
+  var isClassic = tplSelected === 'classic';
+
+  var bgPage = isDark ? '#1a1a2e' : '#f4f4f4';
+  var bgWhite = isDark ? '#23233a' : '#ffffff';
+  var textMain = isDark ? '#f0f0f0' : '#282828';
+  var textMid = isDark ? '#cccccc' : '#505050';
+  var textMuted = isDark ? '#999999' : '#787878';
+  var borderC = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+  var heroImg = heroImgs[tplSelected];
+  var navBg = isMinimal ? bgWhite : isPremium ? 'rgba(0,0,0,0.82)' : isClassic ? bgWhite : 'rgba(0,0,0,0)';
+  var navText = (isMinimal || isClassic) ? textMain : '#ffffff';
+  var overlayOp = isPremium ? 0.5 : isMinimal ? 0.08 : 0.32;
+  var initials = airline.split(' ').map(function(w) { return w[0]; }).join('').slice(0, 2).toUpperCase();
+
+  var navLinks = [];
+  var navCbs = document.querySelectorAll('#nav-cbs input[type=checkbox]');
+  var navLbls = ['Book a Flight', 'Manage Booking', 'Check-in', 'Destinations', 'Travel Information', 'About Us', 'Contact Us'];
+  navCbs.forEach(function(cb, i) { if (cb.checked) navLinks.push(navLbls[i]); });
+  navLinks = navLinks.slice(0, 5);
+
+  function checked(id) { var el = document.getElementById(id); return el && el.checked; }
+
+  var dealsHtml = checked('s-deals') ? '<div style="background:' + bgWhite + ';padding:20px 20px 16px">' +
+    '<p style="font-family:Sora,sans-serif;font-size:14px;font-weight:600;color:' + textMain + ';margin-bottom:4px">Best deals for your trip</p>' +
+    '<p style="font-size:11px;color:' + textMuted + ';margin-bottom:12px">Flight from <span style="color:' + accent + ';font-weight:500">Hanoi (HAN)</span></p>' +
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">' +
+    [['El Nido, Philippines', 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?w=150&q=50'],
+     ['Cairo, Egypt', 'https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=150&q=50'],
+     ['Xinjiang, China', 'https://images.unsplash.com/photo-1514565131-fce0801e6785?w=150&q=50'],
+     ['Bali, Indonesia', 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=150&q=50']
+    ].map(function(d) {
+      return '<div style="border-radius:6px;overflow:hidden;position:relative;height:80px">' +
+        '<img src="' + d[1] + '" loading="lazy" style="width:100%;height:100%;object-fit:cover">' +
+        '<div style="position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,0.7))"></div>' +
+        '<div style="position:absolute;bottom:0;left:0;right:0;padding:5px 6px"><p style="font-size:9px;font-weight:500;color:#fff;line-height:1.2">' + d[0] + '</p></div>' +
+        '<div style="position:absolute;bottom:4px;right:6px"><span style="background:' + primary + ';color:' + pText + ';border-radius:3px;padding:2px 6px;font-size:8px;font-weight:500">View now</span></div>' +
+      '</div>';
+    }).join('') +
+    '</div>' +
+    '<div style="text-align:center;margin-top:12px"><span style="border:1px solid ' + borderC + ';border-radius:20px;padding:5px 16px;font-size:11px;color:' + textMid + ';cursor:pointer">See more fares</span></div>' +
+  '</div>' : '';
+
+  var skyHtml = checked('s-skymiles') ?
+    '<div style="position:relative;height:110px;overflow:hidden">' +
+      '<img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=60" loading="lazy" style="width:100%;height:100%;object-fit:cover">' +
+      '<div style="position:absolute;inset:0;background:rgba(0,0,0,0.52)"></div>' +
+      '<div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:16px 20px">' +
+        '<p style="font-family:Sora,sans-serif;font-size:14px;font-weight:600;color:#fff;margin-bottom:4px">Explore the world with SkyMiles®</p>' +
+        '<p style="font-size:10px;color:rgba(255,255,255,0.8);margin-bottom:10px">Enjoy great savings and flexibility</p>' +
+        '<span style="border:1.5px solid #fff;border-radius:20px;padding:4px 14px;font-size:10px;color:#fff;cursor:pointer;width:fit-content">Learn more</span>' +
+      '</div>' +
+    '</div>' : '';
+
+  var journeyHtml = checked('s-journey') ?
+    '<div style="background:' + bgPage + ';padding:16px 20px">' +
+      '<p style="font-family:Sora,sans-serif;font-size:14px;font-weight:600;color:' + textMain + ';margin-bottom:4px">Make it an incredible journey</p>' +
+      '<p style="font-size:11px;color:' + textMuted + ';margin-bottom:12px">Plan an unforgettable trip beyond your flight</p>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' +
+      [['Explore our destinations', 'Find flight and fares', 'https://images.unsplash.com/photo-1488085061387-422e29b40080?w=150&q=50'],
+       ['Get comfort with baggage', 'Find out more', 'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=150&q=50'],
+       ['Elevate your experiences', 'Explore add-on', 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=150&q=50'],
+       ['Go further with your miles', 'Learn more and join GO7', 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=150&q=50']
+      ].map(function(d) {
+        return '<div style="background:' + bgWhite + ';border-radius:6px;overflow:hidden;display:flex;align-items:stretch;border:0.5px solid ' + borderC + '">' +
+          '<img src="' + d[2] + '" loading="lazy" style="width:60px;height:60px;object-fit:cover;flex-shrink:0">' +
+          '<div style="padding:8px 10px;display:flex;flex-direction:column;justify-content:center">' +
+            '<p style="font-size:11px;font-weight:500;color:' + textMain + ';margin-bottom:3px;line-height:1.3">' + d[0] + '</p>' +
+            '<p style="font-size:10px;color:' + accent + ';cursor:pointer">' + d[1] + ' →</p>' +
+          '</div></div>';
+      }).join('') +
+      '</div></div>' : '';
+
+  var nlHtml = checked('s-newsletter') ?
+    '<div style="background:' + bgWhite + ';padding:16px 20px;text-align:center;border-top:0.5px solid ' + borderC + '">' +
+      '<p style="font-family:Sora,sans-serif;font-size:13px;font-weight:600;color:' + textMain + ';margin-bottom:10px">Subscribe to our newsletter</p>' +
+      '<div style="display:flex;gap:6px;max-width:260px;margin:0 auto">' +
+        '<input placeholder="example@gmail.com" style="flex:1;font-size:11px;border-radius:4px;border:1px solid ' + borderC + ';padding:6px 8px;background:' + bgPage + ';color:' + textMain + ';font-family:Lexend,sans-serif">' +
+        '<span style="background:' + primary + ';color:' + pText + ';border-radius:4px;padding:6px 14px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap">Subscribe</span>' +
+      '</div>' +
+      '<p style="font-size:9px;color:' + textMuted + ';margin-top:6px">By clicking subscribe, you confirm to get offers and news from ' + airline + '.</p>' +
+    '</div>' : '';
+
+  var footerConfig = gv('f-footer-config');
+  var footerExtra = footerConfig ? footerConfig.split(/[\n,]+/).map(function(s) { return s.trim(); }).filter(Boolean).slice(0, 5) : [];
+  var footerCols = [
+    ['About ' + airline, footerExtra.length ? footerExtra : ['About us', 'Corporate news', 'Partnership', 'Sustainability', 'Accessibility']],
+    ['Popular destinations', ['Flight to Hong Kong', 'Flight to Bali', 'Flight to Bangkok', 'Flight to Seoul', 'Flight to Tokyo']],
+    ['Get in touch', ['Contact us', 'Join our team', 'Group bookings']],
+    ['Stay connected', ['Facebook', 'Twitter / X', 'Instagram', 'LinkedIn']]
+  ];
+
+  var footerHtml = checked('s-footer') ?
+    '<div style="background:' + bgWhite + ';border-top:0.5px solid ' + borderC + ';padding:14px 20px">' +
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px">' +
+      footerCols.map(function(col) {
+        return '<div><p style="font-size:10px;font-weight:500;color:' + textMain + ';margin-bottom:6px;font-family:Sora,sans-serif">' + col[0] + '</p>' +
+          col[1].map(function(l) { return '<p style="font-size:9px;color:' + textMuted + ';margin-bottom:3px;cursor:pointer">' + l + '</p>'; }).join('') +
+        '</div>';
+      }).join('') +
+      '</div>' +
+      '<div style="border-top:0.5px solid ' + borderC + ';padding-top:8px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">' +
+        '<div style="display:flex;gap:10px;flex-wrap:wrap">' + ['Cookie Policy', 'Legal', 'Privacy', 'Accessibility', 'Sitemap'].map(function(l) { return '<span style="font-size:9px;color:' + textMuted + ';cursor:pointer">' + l + '</span>'; }).join('') + '</div>' +
+        '<span style="font-size:9px;color:' + textMuted + '">2026 © ' + airline + '. All rights reserved.</span>' +
+      '</div>' +
+    '</div>' : '';
+
+  var homeContent = gv('f-home-content');
+  var tagLine = homeContent
+    ? homeContent.split('\n')[0].slice(0, 80)
+    : toneObj.tag.replace('Dolomites', '<span style="color:' + primary + '">Dolomites</span>');
+  var subLine = homeContent && homeContent.indexOf('\n') >= 0
+    ? homeContent.split('\n').slice(1).join(' ').slice(0, 120)
+    : toneObj.sub;
+
+  wrap.innerHTML = '<div style="font-family:Lexend,sans-serif;background:' + bgPage + '">' +
+    '<div style="position:relative;height:' + (isMinimal ? 140 : 200) + 'px;overflow:hidden">' +
+      '<img src="' + heroImg + '" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:' + (isMinimal ? 0.15 : 1) + '">' +
+      '<div style="position:absolute;inset:0;background:rgba(0,0,0,' + overlayOp + ')"></div>' +
+      '<div style="position:absolute;top:0;left:0;right:0;height:40px;background:' + navBg + ';display:flex;align-items:center;padding:0 16px;gap:12px;border-bottom:' + (isClassic || isMinimal ? '0.5px solid ' + borderC : 'none') + '">' +
+        '<div style="display:flex;align-items:center;gap:5px;flex-shrink:0">' +
+          '<span style="background:' + primary + ';color:' + pText + ';font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;font-family:Sora,sans-serif">' + initials + '</span>' +
+          '<span style="font-size:10px;font-weight:500;color:' + navText + ';white-space:nowrap">' + airline + '</span>' +
+        '</div>' +
+        '<div style="flex:1;display:flex;gap:10px;justify-content:center;overflow:hidden">' + navLinks.map(function(l) { return '<span style="font-size:10px;color:' + navText + ';opacity:0.9;cursor:pointer;white-space:nowrap">' + l + '</span>'; }).join('') + '</div>' +
+        '<span style="font-size:9px;color:' + navText + ';opacity:.7;white-space:nowrap">EN / $USD ▾</span>' +
+      '</div>' +
+      '<div style="position:absolute;bottom:0;left:0;right:0;padding:0 16px 12px;text-align:center">' +
+        '<p style="font-family:Sora,sans-serif;font-size:16px;font-weight:600;color:' + (isMinimal ? textMain : '#fff') + ';margin-bottom:4px;line-height:1.3">' + tagLine + '</p>' +
+        '<p style="font-size:10px;color:' + (isMinimal ? textMuted : 'rgba(255,255,255,0.82)') + ';margin-bottom:10px">' + subLine + '</p>' +
+        '<div style="background:' + bgWhite + ';border-radius:6px;padding:8px 10px;display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center">' +
+          '<span style="font-size:9px;color:' + textMuted + '">From</span>' +
+          '<span style="font-size:9px;color:' + textMid + ';width:60px">Select origin</span>' +
+          '<span style="font-size:9px;color:' + textMuted + '">→</span>' +
+          '<span style="font-size:9px;color:' + textMuted + '">To</span>' +
+          '<span style="font-size:9px;color:' + textMid + ';width:70px">Select destination</span>' +
+          '<span style="background:' + primary + ';color:' + pText + ';border-radius:4px;padding:5px 12px;font-size:9px;font-weight:500;cursor:pointer;white-space:nowrap">' + cta + '</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    dealsHtml + skyHtml + journeyHtml + nlHtml + footerHtml +
+  '</div>';
+}
+
+drawThumbs();
+</script>
+</body>
+</html>
